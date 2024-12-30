@@ -305,7 +305,12 @@ public class SpendingTracker extends javax.swing.JFrame {
                 jMenuItem4ActionPerformed(evt);
             }
         });
-        
+        jMenu2.add(jMenuItem4);
+
+        jMenu1.add(jMenu2);
+
+        jMenuBar1.add(jMenu1);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

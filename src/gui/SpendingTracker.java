@@ -425,7 +425,7 @@ public class SpendingTracker extends javax.swing.JFrame {
                 "Design & Develop BY INCAPP(TEAM RCB)");
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
-    
+
     public static void main(String args[]) {
         
         try {

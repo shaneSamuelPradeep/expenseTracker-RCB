@@ -205,14 +205,14 @@ public class SpendingTracker extends javax.swing.JFrame {
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {a, d, jLabel2});
 
         jLabel5.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
-        jLabel5.setText("Last 20 days Spendings:");
+        jLabel5.setText("Recent Spendings:");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Date", "Category", "Amount"
+                "ID", "Category", "Date", "Amount"
             }
         ) {
             boolean[] canEdit = new boolean [] {

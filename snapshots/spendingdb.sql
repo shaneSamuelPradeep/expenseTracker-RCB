@@ -42,8 +42,33 @@ INSERT INTO `category_info` (`category`) VALUES
 ('Shane-Test');
 
 -- --------------------------------------------------------
+-- Table structure for table `person_info`
 
+CREATE TABLE `person_info` (
+  `person` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 --
+-- Dumping data for table `person_info`
+
+INSERT INTO `person_info` (`person`) VALUES
+('Shane'),
+('Sai')
+('Kusuma');
+
+-- Table structure for table `person_info`
+CREATE TABLE `person_spendings` (
+  `pid` int(11) NOT NULL,
+  `person` varchar(50) NOT NULL,
+  `pdate` date NOT NULL,
+  `amount` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table `person_spendings`
+
+INSERT INTO `person_spendings` (`pid`, `person`, `pdate`, `amount`) VALUES
+(1, 'Shane', '2024-04-29', 200),
+(2, 'Sai', '2024-04-28', 350);
+
 -- Table structure for table `spendings`
 --
 
@@ -69,6 +94,8 @@ INSERT INTO `spendings` (`sid`, `category`, `sdate`, `amount`) VALUES
 (13, 'Tomato', '2020-04-28', 100),
 (14, 'Beef', '2024-12-03', 12);
 
+
+
 --
 -- Indexes for dumped tables
 --
@@ -79,6 +106,13 @@ INSERT INTO `spendings` (`sid`, `category`, `sdate`, `amount`) VALUES
 ALTER TABLE `category_info`
   ADD PRIMARY KEY (`category`);
 
+-- Indexes for table `person_info`
+ALTER TABLE `person_info`
+  ADD PRIMARY KEY (`person`);
+
+-- Indexes for table `person_spendings` 
+ALTER TABLE `person_spendings`
+  ADD PRIMARY KEY (`pid`); 
 --
 -- Indexes for table `spendings`
 --
@@ -88,6 +122,11 @@ ALTER TABLE `spendings`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+-- AUTO_INCREMENT for table `person_spendings`
+
+ALTER TABLE `person_spendings`
+  MODIFY `pid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+COMMIT;
 
 --
 -- AUTO_INCREMENT for table `spendings`

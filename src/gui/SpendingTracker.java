@@ -422,7 +422,7 @@ public class SpendingTracker extends javax.swing.JFrame {
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         JOptionPane.showMessageDialog(null, 
-                "Design & Develop BY INCAPP(TEAM RCB)");
+                "Design & Develop BY TEAM RCB");
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
 

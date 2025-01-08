@@ -50,7 +50,7 @@ public class SpendingTracker extends javax.swing.JFrame {
                     rs.getString("category"),rs.getDate("sdate"),t};
                 dtm.addRow(o);
             }
-            totalAmount.setText(total+"");
+            totalAmount.setText(total+""+'€');
         }catch(Exception ex){
             JOptionPane.showMessageDialog(null, ex);
         }

@@ -2,6 +2,8 @@ package gui;
 import java.sql.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 import db.DbConnect;
 import java.text.SimpleDateFormat;
 
@@ -9,20 +11,21 @@ public class SpendingTracker extends javax.swing.JFrame {
 
    public SpendingTracker() {
         initComponents();
-        displayCategory();
+        displayOptions("Category");
         d.setSelectableDateRange(null, new java.util.Date());
         getEntries();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         d.setDate(new java.util.Date());
     }
 
-    private void displayCategory(){
+    private void displayOptions(String type){
         try{
             category.removeAllItems();
-            ResultSet rs = DbConnect.st.executeQuery(
-                "select * from category_info");
+            String query= type.equals("Category")?
+                "select * from category_info": "select * from person_info";
+            ResultSet rs = DbConnect.st.executeQuery(query);
             while(rs.next()){
-                category.addItem(rs.getString("category"));
+                category.addItem(rs.getString(type.equals("Category")?"category":"person"));
             }
         }catch(Exception ex){
             JOptionPane.showMessageDialog(null, ex);
@@ -66,10 +69,13 @@ public class SpendingTracker extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         a = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
+        expenseType = new javax.swing.JComboBox<>();
         category = new javax.swing.JComboBox<>();
+        person = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
@@ -85,6 +91,7 @@ public class SpendingTracker extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SpendingTracker");
@@ -124,14 +131,36 @@ public class SpendingTracker extends javax.swing.JFrame {
                 aKeyTyped(evt);
             }
         });
+
+        expenseType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Category", "Person" }));
+        expenseType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                expenseTypeActionPerformed(evt);
+            }
+        });
+
+
         jLabel4.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Category:");
+        jLabel4.setText("Expense Type:");
+
+        person.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Person" }));
+
+        jLabel7.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel7.setText("Person:");
 
         jButton1.setText("Add New Category");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setText("Add New Person");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
             }
         });
 
@@ -163,17 +192,31 @@ public class SpendingTracker extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(d, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        
                         .addComponent(jLabel2)
+                        
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(a, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4))
-                    .addComponent(jButton4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(category, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel4)
+                        .addComponent(expenseType, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                       
+                        .addComponent(jButton4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        
+                        .addComponent(jButton5))
+                        
+                        .addComponent(category, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                        
+                        .addComponent(person, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        )
                 .addComponent(jButton2)
                 .addContainerGap())
         );
@@ -181,26 +224,32 @@ public class SpendingTracker extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(a, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(expenseType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(category, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            
+                            .addComponent(person, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        
                             .addComponent(jButton1)
-                            .addComponent(jButton4)))
+                            .addComponent(jButton4)
+                            .addComponent(jButton5)))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(d, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 11, Short.MAX_VALUE))
-        );
+    );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {a, d, jLabel2});
 
@@ -347,38 +396,85 @@ public class SpendingTracker extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
+        populatePersonDropdown();
     }
+
+    private void expenseTypeActionPerformed(java.awt.event.ActionEvent evt) {
+    if (expenseType.getSelectedItem().toString().equals("Category")) {
+        category.setVisible(true);
+        jLabel4.setVisible(true); // Assuming jLabel4 is the label for category
+        person.setVisible(false);
+        jLabel7.setVisible(false); // Assuming jLabel7 is the label for person
+    } else {
+        category.setVisible(false);
+        jLabel4.setVisible(false); // Assuming jLabel4 is the label for category
+        person.setVisible(true);
+        jLabel7.setVisible(true); // Assuming jLabel7 is the label for person
+    }
+}
+
+    
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         new Category().setVisible(true);
     }
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        displayCategory();
+        displayOptions("Category");
     }
 
+    
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String selectedExpenseType = expenseType.getSelectedItem().toString();
+        String amountText = a.getText();
+        int amountValue = Integer.parseInt(amountText);
+        java.util.Date date = d.getDate();
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
         try{
-            java.util.Date dt=d.getDate();
-            String s1=a.getText();
-            String c=(String)category.getSelectedItem();
-            if(dt!=null && !s1.equals("") && !c.equals("")){
-                int amount=Integer.parseInt(s1);
-                java.sql.Date date=new java.sql.Date(dt.getTime());
-                DbConnect.st.executeUpdate(
-                    "insert into spendings (category,sdate,amount) values('"+
-                    c+"','"+date+"',"+amount+")");
-                JOptionPane.showMessageDialog(null, 
-                    "Expense Added Successfully!");
-                getEntries();
-            }else{
+            if (selectedExpenseType.equals("Category")) {
+                String selectedCategory = category.getSelectedItem().toString();
+                DbConnect.st.executeUpdate("INSERT INTO spendings (category, sdate, amount) VALUES ('" + selectedCategory + "', '" + sqlDate + "', " + amountValue + ")");
+                JOptionPane.showMessageDialog(null, "Amount added to spendings successfully!");
+            } else if (selectedExpenseType.equals("Person")) {
+                String selectedPerson = person.getSelectedItem().toString();
+                DbConnect.st.executeUpdate("INSERT INTO person_spendings (person, pdate, amount) VALUES ('" + selectedPerson + "', '" + sqlDate + "', " + amountValue + ")");
+                JOptionPane.showMessageDialog(null, "Amount added to person_spendings successfully!");
+            }
+            else{
                 JOptionPane.showMessageDialog(null, 
                     "Please Fill all details!");
+            }
+            getEntries();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+            }
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {
+        String newPerson = JOptionPane.showInputDialog("Enter new person name:");
+        if (newPerson != null && !newPerson.trim().isEmpty()) {
+            try {
+                DbConnect.st.executeUpdate("insert into person_info (person) values ('" + newPerson + "')");
+                person.addItem(newPerson);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex);
+            }
+        }
+    }
+
+    private void populatePersonDropdown(){
+        try{
+            ResultSet rs = DbConnect.st.executeQuery("select * from person_info");
+            while(rs.next()){
+                person.addItem(rs.getString("person"));
             }
         }catch(Exception ex){
             JOptionPane.showMessageDialog(null, ex);
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }
+
 
     private void aKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_aKeyTyped
         char ch=evt.getKeyChar();
@@ -386,6 +482,8 @@ public class SpendingTracker extends javax.swing.JFrame {
             evt.consume();
         }
     }//GEN-LAST:event_aKeyTyped
+
+    
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         int ri=table.getSelectedRow();
@@ -456,18 +554,22 @@ public class SpendingTracker extends javax.swing.JFrame {
 
     // Variables declaration 
     private javax.swing.JTextField a;
+    private javax.swing.JComboBox<String> expenseType;
     private javax.swing.JComboBox<String> category;
+    private javax.swing.JComboBox<String> person;
     private com.toedter.calendar.JDateChooser d;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;

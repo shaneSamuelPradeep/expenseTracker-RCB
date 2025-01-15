@@ -42,16 +42,21 @@ public class SpendingTracker extends javax.swing.JFrame {
             }
             java.time.LocalDate cd=java.time.LocalDate.now();
             java.time.LocalDate bd=cd.minusDays(20);
+
+            String selectedExpenseType = expenseType.getSelectedItem().toString();
+            String query = selectedExpenseType.equals("Category") ?
+            "SELECT sid AS id, category AS type, sdate AS date, amount FROM spendings ORDER BY date DESC" :
+            "SELECT pid AS id, person AS type, pdate AS date, amount FROM person_spendings ORDER BY pdate DESC";
+
             ResultSet rs = DbConnect.st.executeQuery(
-                "select * from spendings where sdate<='"+
-                cd+"' and sdate>='"+bd+"'");
+                query);
             int total=0;
             while(rs.next()){
-                int t=rs.getInt("amount");
-                total+=t;
-                Object o[]={rs.getInt("sid"),
-                    rs.getString("category"),rs.getDate("sdate"),t};
-                dtm.addRow(o);
+                int id = rs.getInt("id");
+                String type = rs.getString("type");
+                Date date = rs.getDate("date");
+                int amount = rs.getInt("amount");
+                dtm.addRow(new Object[]{id, type, date, amount});
             }
             totalAmount.setText(total+""+'€');
         }catch(Exception ex){
@@ -96,9 +101,9 @@ public class SpendingTracker extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SpendingTracker");
 
-        jPanel1.setBackground(new java.awt.Color(0, 51, 102));
+        jPanel1.setBackground(new java.awt.Color(102, 165, 173));
 
-        jPanel2.setBackground(new java.awt.Color(0, 102, 255));
+        jPanel2.setBackground(new java.awt.Color(30, 71, 92));
 
         jLabel1.setFont(new java.awt.Font("Trebuchet MS", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -261,15 +266,15 @@ public class SpendingTracker extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Category", "Date", "Amount"
+            "ID", expenseType.getSelectedItem().toString().equals("Category") ? "Category" : "Person", "Date", "Amount"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+            false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+            return canEdit [columnIndex];
             }
         });
         table.getTableHeader().setReorderingAllowed(false);
@@ -284,7 +289,7 @@ public class SpendingTracker extends javax.swing.JFrame {
             }
         });
 
-        jPanel3.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel3.setBackground(new java.awt.Color(247, 247, 247));
 
         totalAmount.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         totalAmount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -405,12 +410,16 @@ public class SpendingTracker extends javax.swing.JFrame {
         jLabel4.setVisible(true); // Assuming jLabel4 is the label for category
         person.setVisible(false);
         jLabel7.setVisible(false); // Assuming jLabel7 is the label for person
+        table.getColumnModel().getColumn(1).setHeaderValue("Category");
     } else {
         category.setVisible(false);
         jLabel4.setVisible(false); // Assuming jLabel4 is the label for category
         person.setVisible(true);
         jLabel7.setVisible(true); // Assuming jLabel7 is the label for person
+        table.getColumnModel().getColumn(1).setHeaderValue("Person");
     }
+    table.getTableHeader().repaint();
+    getEntries();
 }
 
     

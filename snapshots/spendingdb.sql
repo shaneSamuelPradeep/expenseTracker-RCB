@@ -52,7 +52,7 @@ CREATE TABLE `person_info` (
 
 INSERT INTO `person_info` (`person`) VALUES
 ('Shane'),
-('Sai')
+('Sai'),
 ('Kusuma');
 
 -- Table structure for table `person_info`

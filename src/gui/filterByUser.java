@@ -123,7 +123,7 @@ public class filterByUser extends javax.swing.JFrame {
         totalAmount3.setText("0");
 
         jLabel16.setFont(new java.awt.Font("Trebuchet MS", 1, 12));
-        jLabel16.setText("User:");
+        jLabel16.setText("Person:");
 
         user.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

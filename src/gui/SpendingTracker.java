@@ -1,4 +1,5 @@
 package gui;
+import java.awt.Color;
 import java.sql.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -32,37 +33,86 @@ public class SpendingTracker extends javax.swing.JFrame {
         }
     }
 
-    private void getEntries(){
-        try{
-            javax.swing.table.DefaultTableModel dtm=
-                (javax.swing.table.DefaultTableModel)table.getModel();
-            int rc=dtm.getRowCount();
-            while(rc--!=0){
+    private int getLimit(String month, int year) {
+        try {
+            String query = "SELECT limit_value FROM limits WHERE month = ? AND year = ?";
+            PreparedStatement pst = DbConnect.c.prepareStatement(query);
+            pst.setString(1, month);
+            pst.setInt(2, year);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("limit_value");
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        return Integer.MAX_VALUE; // Return a very high value if no limit is set
+    }
+    
+    private void getEntries() {
+        try {
+            javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel) table.getModel();
+            int rc = dtm.getRowCount();
+            while (rc-- != 0) {
                 dtm.removeRow(0);
             }
-            java.time.LocalDate cd=java.time.LocalDate.now();
-            java.time.LocalDate bd=cd.minusDays(20);
-
+            java.time.LocalDate cd = java.time.LocalDate.now();
+            java.time.LocalDate bd = cd.minusDays(20);
+    
             String selectedExpenseType = expenseType.getSelectedItem().toString();
             String query = selectedExpenseType.equals("Category") ?
-            "SELECT sid AS id, category AS type, sdate AS date, amount FROM spendings ORDER BY date DESC" :
-            "SELECT pid AS id, person AS type, pdate AS date, amount FROM person_spendings ORDER BY pdate DESC";
-
-            ResultSet rs = DbConnect.st.executeQuery(
-                query);
-            int total=0;
-            while(rs.next()){
+                "SELECT sid AS id, category AS type, sdate AS date, amount FROM spendings ORDER BY sdate DESC" :
+                "SELECT pid AS id, person AS type, pdate AS date, amount FROM person_spendings ORDER BY pdate DESC";
+    
+            ResultSet rs = DbConnect.st.executeQuery(query);
+            int total = 0;
+            int monthlyTotal = 0;
+            int yearlyTotal = 0;
+            String exceededMonth = null;
+            int exceededYear = 0;
+            while (rs.next()) {
                 int id = rs.getInt("id");
                 String type = rs.getString("type");
                 Date date = rs.getDate("date");
                 int amount = rs.getInt("amount");
                 dtm.addRow(new Object[]{id, type, date, amount});
+                total += amount;
+    
+                java.time.LocalDate entryDate = date.toLocalDate();
+                if (entryDate.getMonth() == cd.getMonth() && entryDate.getYear() == cd.getYear()) {
+                    monthlyTotal += amount;
+                }
+                if (entryDate.getYear() == cd.getYear()) {
+                    yearlyTotal += amount;
+                }
             }
-            totalAmount.setText(total+""+'€');
-        }catch(Exception ex){
+    
+            int monthlyLimit = getLimit(cd.getMonth().toString(), cd.getYear());
+            int yearlyLimit = getLimit(null, cd.getYear());
+    
+            totalAmount.setText(total + "€");
+    
+            if (monthlyTotal > monthlyLimit) {
+                exceededMonth = cd.getMonth().toString();
+                exceededYear = cd.getYear();
+            } else if (yearlyTotal > yearlyLimit) {
+                exceededYear = cd.getYear();
+            }
+    
+            if (exceededMonth != null || exceededYear != 0) {
+                totalAmount.setForeground(Color.RED);
+                int exceededAmount = Math.max(monthlyTotal - monthlyLimit, yearlyTotal - yearlyLimit);
+                totalAmount.setText(total + "€ (Exceeded by " + exceededAmount + "€ for " + (exceededMonth != null ? exceededMonth + " " : "") + exceededYear + ")");
+            } else {
+                totalAmount.setForeground(Color.BLACK);
+            }
+        } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex);
         }
     }
+    
+
+    
 
     private void initComponents() {
 
@@ -81,6 +131,8 @@ public class SpendingTracker extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
@@ -170,6 +222,20 @@ public class SpendingTracker extends javax.swing.JFrame {
             }
         });
 
+        jButton6.setText("Add Recurring Expense");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openReccuringExpenseDialog();
+            }
+        });
+
+        jButton7.setText("Set Limit");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openSetLimitDialog();
+            }
+});
+
         jButton2.setBackground(new java.awt.Color(255, 255, 0));
         jButton2.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jButton2.setText("ADD");
@@ -193,10 +259,11 @@ public class SpendingTracker extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(d, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(d, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         
                         .addComponent(jLabel2)
@@ -212,10 +279,12 @@ public class SpendingTracker extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton1)
+                        .addComponent(jButton7)
                         
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         
-                        .addComponent(jButton5))
+                        .addComponent(jButton5)
+                        .addComponent(jButton6))
                         
                         .addComponent(category, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                         
@@ -235,6 +304,8 @@ public class SpendingTracker extends javax.swing.JFrame {
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
+                        .addComponent(d, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(a, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(expenseType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -250,12 +321,15 @@ public class SpendingTracker extends javax.swing.JFrame {
                         
                             .addComponent(jButton1)
                             .addComponent(jButton4)
-                            .addComponent(jButton5)))
+                            .addComponent(jButton5)
+                            .addComponent(jButton6)
+                            .addComponent(jButton7))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(d, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 11, Short.MAX_VALUE))
-    );
+    ));
+
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {a, d, jLabel2});
 
@@ -422,6 +496,18 @@ public class SpendingTracker extends javax.swing.JFrame {
     getEntries();
 }
 
+private void openReccuringExpenseDialog() {
+    ReccuringExpense recurringExpense = new ReccuringExpense();
+    recurringExpense.openReccuringExpenseDialog(this);
+}
+
+
+private void openSetLimitDialog() {
+SetLimit setLimit = new SetLimit();
+setLimit.openSetLimitDialog(this);
+}
+
+
     
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -575,6 +661,8 @@ public class SpendingTracker extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

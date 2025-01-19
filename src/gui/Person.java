@@ -9,6 +9,12 @@ public class Person extends javax.swing.JFrame {
     public Person() {
         initComponents();
         getEntries();
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                new SpendingTracker().populatePersonDropdown();
+            }
+        });
     }
 
     private void getEntries() {
@@ -22,8 +28,8 @@ public class Person extends javax.swing.JFrame {
             int sno = 0;
             while (rs.next()) {
                 String person = rs.getString("person");
-                java.util.Vector row = new java.util.Vector();
-                row.add(++sno);
+                java.util.Vector<String> row = new java.util.Vector<>();
+                row.add(String.valueOf(++sno));
                 row.add(person);
                 dtm.addRow(row);
             }
@@ -232,3 +238,4 @@ public class Person extends javax.swing.JFrame {
     private javax.swing.JTextField t;
     private javax.swing.JTable table1;
 }
+

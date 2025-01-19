@@ -52,7 +52,7 @@ CREATE TABLE `person_info` (
 
 INSERT INTO `person_info` (`person`) VALUES
 ('Shane'),
-('Sai')
+('Sai'),
 ('Kusuma');
 
 -- Table structure for table `person_info`
@@ -94,7 +94,36 @@ INSERT INTO `spendings` (`sid`, `category`, `sdate`, `amount`) VALUES
 (13, 'Tomato', '2020-04-28', 100),
 (14, 'Beef', '2024-12-03', 12);
 
+-- Table structure for table `reccuring_expenses`
+CREATE TABLE `reccuring_expenses` (
+    `id` SERIAL PRIMARY KEY, -- Unique identifier for each row
+    `amount` DECIMAL(10, 2) NOT NULL, -- Amount of the expense, supports up to 2 decimal places
+    `start_date` DATE NOT NULL, -- Start date of the recurring expense
+    `end_date` DATE, -- End date of the recurring expense (NULL for ongoing)
+    `expense_type` VARCHAR(255) NOT NULL, -- Type of expense (e.g., "subscription", "utility")
+    `category` VARCHAR(255) , 
+    `person` VARCHAR(255),
+    `frequency` VARCHAR(255) NOT NULL);
+;
+-- Dumping data for table `reccuring_expenses`
 
+INSERT INTO `reccuring_expenses` (`id`, `amount`, `start_date`, `end_date`, `expense_type`, `category`, `person`,`frequency`) VALUES
+(1, 100.00, '2024-01-01', '2024-12-31', 'person', NULL , 'Kusuma', 'monthly'),
+(2, 50.00, '2024-01-01', '2024-12-31', 'category', 'Coffee', NULL, 'monthly');
+
+
+-- Table structure for table `limits`
+CREATE TABLE `limits` (
+    `id` SERIAL PRIMARY KEY, -- Unique identifier for each row
+    `limit_value` int NOT NULL, -- Amount of the expense, supports up to 2 decimal places
+    `month` VARCHAR(50) NOT NULL,
+    `year` INT NOT NULL);
+
+-- Dumping data for table `limits`
+
+INSERT INTO `limits` (`id`, `limit_value`,`month`,`year` ) VALUES
+(1, 100, 'January',2025),
+(2, 1200, 'March',2025);
 
 --
 -- Indexes for dumped tables

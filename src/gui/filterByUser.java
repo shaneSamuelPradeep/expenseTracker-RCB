@@ -3,6 +3,14 @@ package gui;
 import java.sql.*;
 import javax.swing.JOptionPane;
 import db.DbConnect;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import javax.swing.JFileChooser;
 
 public class filterByUser extends javax.swing.JFrame {
 
@@ -42,6 +50,7 @@ public class filterByUser extends javax.swing.JFrame {
         totalAmount3 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         user = new javax.swing.JComboBox<>();
+        generatePdfButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Filter by User");
@@ -122,6 +131,14 @@ public class filterByUser extends javax.swing.JFrame {
             }
         });
 
+        generatePdfButton.setFont(new java.awt.Font("Trebuchet MS", 1, 12));
+        generatePdfButton.setText("Generate PDF");
+        generatePdfButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generatePdfButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -148,7 +165,10 @@ public class filterByUser extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel16)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(user, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(user, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(generatePdfButton)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -175,6 +195,8 @@ public class filterByUser extends javax.swing.JFrame {
                     .addComponent(totalAmount3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(generatePdfButton)
                 .addContainerGap())
         );
 
@@ -236,10 +258,52 @@ public class filterByUser extends javax.swing.JFrame {
         du2.setEnabled(true);
     }
 
+    private void generatePdfButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Specify a file to save");
+        int userSelection = fileChooser.showSaveDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            java.io.File fileToSave = fileChooser.getSelectedFile();
+            Document document = new Document();
+            try {
+                PdfWriter.getInstance(document, new FileOutputStream(fileToSave.getAbsolutePath() + ".pdf"));
+                document.open();
+                document.add(new Paragraph("Filtered Results"));
+                document.add(new Paragraph("User: " + user.getSelectedItem()));
+                document.add(new Paragraph("From: " + du1.getDate()));
+                document.add(new Paragraph("To: " + du2.getDate()));
+                document.add(new Paragraph(" "));
+
+                PdfPTable table = new PdfPTable(3);
+                table.addCell("Date");
+                table.addCell("User");
+                table.addCell("Amount");
+
+                javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel) table3.getModel();
+                int rowCount = dtm.getRowCount();
+                for (int i = 0; i < rowCount; i++) {
+                    table.addCell(dtm.getValueAt(i, 0).toString());
+                    table.addCell(dtm.getValueAt(i, 1).toString());
+                    table.addCell(dtm.getValueAt(i, 2).toString());
+                }
+
+                document.add(table);
+                document.add(new Paragraph("Total Amount: " + totalAmount3.getText()));
+                JOptionPane.showMessageDialog(null, "PDF generated successfully.");
+            } catch (DocumentException | FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, ex);
+            } finally {
+                document.close();
+            }
+        }
+    }
+
     private javax.swing.JComboBox<String> user;
     private com.toedter.calendar.JDateChooser du1;
     private com.toedter.calendar.JDateChooser du2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton generatePdfButton;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;

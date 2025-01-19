@@ -289,7 +289,7 @@ public class filterByUser extends javax.swing.JFrame {
                 }
 
                 document.add(table);
-                document.add(new Paragraph("Total Amount: " + totalAmount3.getText()));
+                document.add(new Paragraph("Total Amount: " + totalAmount3.getText() + "€"));
                 JOptionPane.showMessageDialog(null, "PDF generated successfully.");
             } catch (DocumentException | FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(null, ex);

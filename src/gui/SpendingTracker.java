@@ -1,11 +1,12 @@
 package gui;
+// import gui.Person;
 import java.sql.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+// import javax.swing.table.DefaultTableModel;
 
 import db.DbConnect;
-import java.text.SimpleDateFormat;
+// import java.text.SimpleDateFormat;
 
 public class SpendingTracker extends javax.swing.JFrame {
 
@@ -321,7 +322,7 @@ public class SpendingTracker extends javax.swing.JFrame {
         jMenuItem1.setText("View All Spending");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+            jMenuItem1ActionPerformed(evt);
             }
         });
         jMenu1.add(jMenuItem1);
@@ -330,7 +331,7 @@ public class SpendingTracker extends javax.swing.JFrame {
         jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+            jMenuItem2ActionPerformed(evt);
             }
         });
         jMenu1.add(jMenuItem2);
@@ -339,7 +340,7 @@ public class SpendingTracker extends javax.swing.JFrame {
         jMenuItem3.setText("Exit App");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+            jMenuItem3ActionPerformed(evt);
             }
         });
         jMenu1.add(jMenuItem3);
@@ -351,10 +352,19 @@ public class SpendingTracker extends javax.swing.JFrame {
         jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
+            jMenuItem4ActionPerformed(evt);
             }
         });
         jMenu2.add(jMenuItem4);
+
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem5.setText("Manage Persons");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            new Person().setVisible(true);
+            }
+        });
+        jMenu2.add(jMenuItem5);
 
         jMenu1.add(jMenu2);
 
@@ -453,18 +463,10 @@ public class SpendingTracker extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {
-        String newPerson = JOptionPane.showInputDialog("Enter new person name:");
-        if (newPerson != null && !newPerson.trim().isEmpty()) {
-            try {
-                DbConnect.st.executeUpdate("insert into person_info (person) values ('" + newPerson + "')");
-                person.addItem(newPerson);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex);
-            }
-        }
+        new Person().setVisible(true);
     }
 
-    private void populatePersonDropdown(){
+    public void populatePersonDropdown(){
         try{
             ResultSet rs = DbConnect.st.executeQuery("select * from person_info");
             while(rs.next()){
@@ -577,6 +579,7 @@ public class SpendingTracker extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

@@ -2,6 +2,14 @@ package gui;
 import java.sql.*;
 import javax.swing.JOptionPane;
 import db.DbConnect;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import javax.swing.JFileChooser;
 
 
 public class ViewSpending extends javax.swing.JFrame {
@@ -43,6 +51,7 @@ public class ViewSpending extends javax.swing.JFrame {
         table1 = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         totalAmount1 = new javax.swing.JLabel();
+        generatePdfButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -57,6 +66,7 @@ public class ViewSpending extends javax.swing.JFrame {
         totalAmount2 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         category = new javax.swing.JComboBox<>();
+        generatePdfButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("View Spending");
@@ -128,6 +138,14 @@ public class ViewSpending extends javax.swing.JFrame {
         totalAmount1.setFont(new java.awt.Font("Trebuchet MS", 1, 13));
         totalAmount1.setText("0");
 
+        generatePdfButton1.setFont(new java.awt.Font("Trebuchet MS", 1, 12));
+        generatePdfButton1.setText("Generate PDF");
+        generatePdfButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generatePdfButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -150,7 +168,10 @@ public class ViewSpending extends javax.swing.JFrame {
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(totalAmount1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(generatePdfButton1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -173,6 +194,8 @@ public class ViewSpending extends javax.swing.JFrame {
                     .addComponent(totalAmount1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(generatePdfButton1)
                 .addContainerGap())
         );
 
@@ -248,6 +271,14 @@ public class ViewSpending extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Trebuchet MS", 1, 12));
         jLabel11.setText("Category:");
 
+        generatePdfButton2.setFont(new java.awt.Font("Trebuchet MS", 1, 12));
+        generatePdfButton2.setText("Generate PDF");
+        generatePdfButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generatePdfButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -274,7 +305,10 @@ public class ViewSpending extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(category, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(category, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(generatePdfButton2)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -301,6 +335,8 @@ public class ViewSpending extends javax.swing.JFrame {
                     .addComponent(totalAmount2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(generatePdfButton2)
                 .addContainerGap())
         );
 
@@ -397,7 +433,86 @@ public class ViewSpending extends javax.swing.JFrame {
         }
     }
 
-    
+    private void generatePdfButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Specify a file to save");
+        int userSelection = fileChooser.showSaveDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            java.io.File fileToSave = fileChooser.getSelectedFile();
+            Document document = new Document();
+            try {
+                PdfWriter.getInstance(document, new FileOutputStream(fileToSave.getAbsolutePath() + ".pdf"));
+                document.open();
+                document.add(new Paragraph("Filtered Results by Date"));
+                document.add(new Paragraph("From: " + d1.getDate()));
+                document.add(new Paragraph("To: " + d2.getDate()));
+                document.add(new Paragraph(" "));
+
+                PdfPTable table = new PdfPTable(3);
+                table.addCell("Date");
+                table.addCell("Category");
+                table.addCell("Amount");
+
+                javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel) table1.getModel();
+                int rowCount = dtm.getRowCount();
+                for (int i = 0; i < rowCount; i++) {
+                    table.addCell(dtm.getValueAt(i, 0).toString());
+                    table.addCell(dtm.getValueAt(i, 1).toString());
+                    table.addCell(dtm.getValueAt(i, 2).toString());
+                }
+
+                document.add(table);
+                document.add(new Paragraph("Total Amount: " + totalAmount1.getText() + "€"));
+                JOptionPane.showMessageDialog(null, "PDF generated successfully.");
+            } catch (DocumentException | FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, ex);
+            } finally {
+                document.close();
+            }
+        }
+    }
+
+    private void generatePdfButton2ActionPerformed(java.awt.event.ActionEvent evt) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Specify a file to save");
+        int userSelection = fileChooser.showSaveDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            java.io.File fileToSave = fileChooser.getSelectedFile();
+            Document document = new Document();
+            try {
+                PdfWriter.getInstance(document, new FileOutputStream(fileToSave.getAbsolutePath() + ".pdf"));
+                document.open();
+                document.add(new Paragraph("Filtered Results by Category"));
+                document.add(new Paragraph("Category: " + category.getSelectedItem()));
+                document.add(new Paragraph("From: " + dd1.getDate()));
+                document.add(new Paragraph("To: " + dd2.getDate()));
+                document.add(new Paragraph(" "));
+
+                PdfPTable table = new PdfPTable(3);
+                table.addCell("Date");
+                table.addCell("Category");
+                table.addCell("Amount");
+
+                javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel) table2.getModel();
+                int rowCount = dtm.getRowCount();
+                for (int i = 0; i < rowCount; i++) {
+                    table.addCell(dtm.getValueAt(i, 0).toString());
+                    table.addCell(dtm.getValueAt(i, 1).toString());
+                    table.addCell(dtm.getValueAt(i, 2).toString());
+                }
+
+                document.add(table);
+                document.add(new Paragraph("Total Amount: " + totalAmount2.getText() + "€"));
+                JOptionPane.showMessageDialog(null, "PDF generated successfully.");
+            } catch (DocumentException | FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, ex);
+            } finally {
+                document.close();
+            }
+        }
+    }
 
     private javax.swing.JComboBox<String> category;
     private com.toedter.calendar.JDateChooser d1;
@@ -406,6 +521,8 @@ public class ViewSpending extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser dd2;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton generatePdfButton1;
+    private javax.swing.JButton generatePdfButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;

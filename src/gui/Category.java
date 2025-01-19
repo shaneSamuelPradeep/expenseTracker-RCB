@@ -229,7 +229,7 @@ public class Category extends javax.swing.JFrame {
                                 getEntries();
                         } else {
                                 JOptionPane.showMessageDialog(null,
-                                                "Plz Enter the category first!");
+                                                "Please Enter the category first!");
                         }
                 } catch (SQLIntegrityConstraintViolationException ex) {
                         JOptionPane.showMessageDialog(null,

@@ -53,13 +53,13 @@ public class filterByUser extends javax.swing.JFrame {
         generatePdfButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Filter by User");
+        setTitle("Filter by Person");
 
         jPanel5.setBackground(new java.awt.Color(204, 255, 204));
 
         jLabel12.setFont(new java.awt.Font("Trebuchet MS", 1, 20));
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel12.setText("Filter by User");
+        jLabel12.setText("Filter by Person");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);

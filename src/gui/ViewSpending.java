@@ -69,7 +69,7 @@ public class ViewSpending extends javax.swing.JFrame {
         generatePdfButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("View Spending");
+        setTitle("Filter By Date or Category");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 153));
 

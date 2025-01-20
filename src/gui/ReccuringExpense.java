@@ -153,7 +153,7 @@ public class ReccuringExpense {
             pst.executeUpdate();
 
             JOptionPane.showMessageDialog(null, "Recurring expense deleted successfully!");
-            loadReccuringExpenses(); // Refresh the table
+            loadReccuringExpenses();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex);
         }

@@ -46,7 +46,7 @@ public class SpendingTracker extends javax.swing.JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex);
         }
-        return Integer.MAX_VALUE; // Return a very high value if no limit is set
+        return Integer.MAX_VALUE;
     }
 
     private void getEntries() {
@@ -156,7 +156,7 @@ public class SpendingTracker extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(30, 71, 92));
 
-        jLabel1.setFont(new java.awt.Font("Trebuchet MS", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Trebuchet MS", 1, 18));
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Add New Expense");
@@ -173,11 +173,11 @@ public class SpendingTracker extends javax.swing.JFrame {
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel1)
                                 .addContainerGap()));
-        jLabel2.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Trebuchet MS", 1, 14));
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Amount:");
 
-        jLabel3.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Trebuchet MS", 1, 14));
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Date:");
 
@@ -194,13 +194,13 @@ public class SpendingTracker extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Trebuchet MS", 1, 14));
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Expense Type:");
 
         person.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Person" }));
 
-        jLabel7.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Trebuchet MS", 1, 14));
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Person:");
 
@@ -233,7 +233,7 @@ public class SpendingTracker extends javax.swing.JFrame {
         });
 
         jButton2.setBackground(new java.awt.Color(255, 255, 0));
-        jButton2.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        jButton2.setFont(new java.awt.Font("Trebuchet MS", 1, 14));
         jButton2.setText("ADD");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -357,7 +357,7 @@ public class SpendingTracker extends javax.swing.JFrame {
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] { a, d, jLabel2 });
 
-        jLabel5.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Trebuchet MS", 1, 14));
         jLabel5.setText("Recent Spendings:");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -380,7 +380,7 @@ public class SpendingTracker extends javax.swing.JFrame {
         jScrollPane1.setViewportView(table);
 
         jButton3.setBackground(new java.awt.Color(255, 51, 51));
-        jButton3.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        jButton3.setFont(new java.awt.Font("Trebuchet MS", 1, 14));
         jButton3.setText("Remove");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -390,11 +390,11 @@ public class SpendingTracker extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(247, 247, 247));
 
-        totalAmount.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        totalAmount.setFont(new java.awt.Font("Trebuchet MS", 1, 14));
         totalAmount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         totalAmount.setText("0");
 
-        jLabel6.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Trebuchet MS", 1, 14));
         jLabel6.setText("Total Amount");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -515,15 +515,15 @@ public class SpendingTracker extends javax.swing.JFrame {
     private void expenseTypeActionPerformed(java.awt.event.ActionEvent evt) {
         if (expenseType.getSelectedItem().toString().equals("Category")) {
             category.setVisible(true);
-            jLabel4.setVisible(true); // Assuming jLabel4 is the label for category
+            jLabel4.setVisible(true);
             person.setVisible(false);
-            jLabel7.setVisible(false); // Assuming jLabel7 is the label for person
+            jLabel7.setVisible(false);
             table.getColumnModel().getColumn(1).setHeaderValue("Category");
         } else {
             category.setVisible(false);
-            jLabel4.setVisible(false); // Assuming jLabel4 is the label for category
+            jLabel4.setVisible(false); 
             person.setVisible(true);
-            jLabel7.setVisible(true); // Assuming jLabel7 is the label for person
+            jLabel7.setVisible(true);
             table.getColumnModel().getColumn(1).setHeaderValue("Person");
         }
         table.getTableHeader().repaint();
@@ -540,15 +540,15 @@ public class SpendingTracker extends javax.swing.JFrame {
         setLimit.openSetLimitDialog(this);
     }
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         new Category().setVisible(true);
     }
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton4ActionPerformed
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {
         displayOptions("Category");
     }
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton2ActionPerformed
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
         String selectedExpenseType = expenseType.getSelectedItem().toString();
         String amountText = a.getText();
         int amountValue = Integer.parseInt(amountText);
@@ -574,7 +574,7 @@ public class SpendingTracker extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, ex);
         }
 
-    }// GEN-LAST:event_jButton2ActionPerformed
+    }
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {
         new Person().setVisible(true);
@@ -591,14 +591,14 @@ public class SpendingTracker extends javax.swing.JFrame {
         }
     }
 
-    private void aKeyTyped(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_aKeyTyped
+    private void aKeyTyped(java.awt.event.KeyEvent evt) {
         char ch = evt.getKeyChar();
         if (!Character.isDigit(ch)) {
             evt.consume();
         }
-    }// GEN-LAST:event_aKeyTyped
+    }
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton3ActionPerformed
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
         int ri = table.getSelectedRow();
         if (ri != -1) {
             int r = JOptionPane.showConfirmDialog(null,
@@ -617,24 +617,24 @@ public class SpendingTracker extends javax.swing.JFrame {
                 }
             }
         }
-    }// GEN-LAST:event_jButton3ActionPerformed
+    }
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {
         new Category().setVisible(true);
-    }// GEN-LAST:event_jMenuItem2ActionPerformed
+    }
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         new ViewSpending().setVisible(true);
-    }// GEN-LAST:event_jMenuItem1ActionPerformed
+    }
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem3ActionPerformed
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
         System.exit(0);
-    }// GEN-LAST:event_jMenuItem3ActionPerformed
+    }
 
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem4ActionPerformed
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {
         JOptionPane.showMessageDialog(null,
                 "Design & Develop BY TEAM RCB");
-    }// GEN-LAST:event_jMenuItem4ActionPerformed
+    }
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {
         new filterByUser().setVisible(true);

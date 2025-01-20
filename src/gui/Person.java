@@ -38,7 +38,7 @@ public class Person extends javax.swing.JFrame {
         }
     }
 
-    // @SuppressWarnings("unchecked")
+
     private void initComponents() {
 
         jPanel4 = new javax.swing.JPanel();
